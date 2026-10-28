@@ -83,7 +83,12 @@ async function toolDetail(env, id) {
       COALESCE(SUM(CASE WHEN m.movement_type='IN' THEN m.quantity
                         WHEN m.movement_type='OUT' THEN -m.quantity
                         WHEN m.movement_type='ADJUST' THEN m.quantity ELSE 0 END), 0) AS stock,
-      MIN(CASE WHEN m.movement_type='IN' THEN m.movement_date END) AS received_date
+      MIN(
+  CASE
+    WHEN m.movement_type = 'IN'
+    THEN m.movement_date
+  END
+) AS received_date
     FROM tools t LEFT JOIN movements m ON m.tool_id=t.id
     WHERE t.id=? AND t.archived=0 GROUP BY t.id
   `).bind(id).first();
