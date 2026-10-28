@@ -238,7 +238,7 @@ async function api(request, env) {
         UPDATE tools SET tool_code=?,tool_name=?,category=?,unit=?,production_line=?,process_machine=?,storage_location=?,photo_key=?,notes=?,updated_at=datetime('now')
         WHERE id=?
       `).bind(code, name, String(body.category || ""), String(body.unit || "ชิ้น"), String(body.production_line || ""),
-        String(body.process_machine || ""), String(body.storage_location || ""), photoKey, String(body.notes || ""), id).run();
+        String(body.process_machine || ""), String(body.storage_location || ""), null, String(body.notes || ""), id).run();
     } catch (e) {
       if (String(e).includes("UNIQUE")) return json({ error: "รหัสเครื่องมือนี้มีอยู่แล้ว" }, 409);
       throw e;
