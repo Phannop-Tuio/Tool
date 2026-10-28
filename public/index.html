@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#75624e">
+  <title>คลังเครื่องมือ | Tool Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f4f0e8;--paper:#fffdf8;--ink:#3f3a32;--muted:#81776a;--earth:#75624e;--earth2:#a98b6a;--sage:#dce6d7;--sage-ink:#35533c;--line:#e5ddd0;--red:#a7463c;--shadow:0 8px 26px #55463212}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'Sarabun',sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:600}button:disabled{opacity:.5;cursor:not-allowed}.primary{background:linear-gradient(135deg,#75624e,#9c8060);color:white}.soft{background:#e9e1d5;color:#594a39}.danger{background:#f5dfdc;color:#8b302a}.ghost{background:transparent;color:var(--earth);border:1px solid var(--line)}.hidden{display:none!important}.wrap{max-width:1200px;margin:auto;padding:18px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px}.logo{background:var(--earth);color:white;width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:24px}.brand h1{font-size:22px;margin:0}.brand p{margin:0;color:var(--muted);font-size:13px}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:#f8f4ed;border-radius:14px;padding:14px}.stat span{color:var(--muted);font-size:13px}.stat strong{display:block;font-size:26px;margin-top:4px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}.search{flex:1;min-width:220px}input,select,textarea{width:100%;border:1px solid #d9d0c3;border-radius:10px;padding:10px 12px;background:white;color:var(--ink);outline-color:var(--earth2)}label{display:block;font-size:13px;color:var(--muted);margin:0 0 5px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fields .full{grid-column:1/-1}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:780px}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}th{color:var(--muted);font-weight:600;background:#faf7f1}.thumb{width:54px;height:54px;object-fit:cover;border-radius:10px;background:#eee5d8}.pill{display:inline-block;border-radius:999px;padding:3px 9px;background:var(--sage);color:var(--sage-ink);font-size:12px}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 9px;font-size:12px}.muted{color:var(--muted)}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.modal{position:fixed;inset:0;background:#201b16a6;display:flex;align-items:center;justify-content:center;padding:14px;z-index:10;overflow:auto}.modalbox{width:min(760px,100%);max-height:94vh;overflow:auto;background:var(--paper);border-radius:18px;padding:20px}.modalhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.modalhead h2{margin:0;font-size:21px}.preview{width:110px;height:110px;object-fit:cover;border-radius:12px;background:#eee5d8}.notice{padding:11px 13px;border-radius:10px;background:#f6e9d2;color:#715126;margin:10px 0;font-size:13px}.login{max-width:460px;margin:7vh auto}.empty{text-align:center;color:var(--muted);padding:28px}.section-title{margin:0 0 14px;font-size:18px}.status{font-size:12px;color:var(--muted)}@media(max-width:760px){.wrap{padding:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fields{grid-template-columns:1fr}.fields .full{grid-column:auto}.brand h1{font-size:19px}.card{padding:14px}.top{align-items:flex-start}.top-actions{display:flex;flex-direction:column}.hide-mobile{display:none}.toolbar{align-items:stretch}.search{min-width:100%}.modalbox{padding:15px}.stat strong{font-size:23px}}@media(max-width:380px){.grid{grid-template-columns:1fr}.brand p{font-size:11px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">🧰</div><div><h1>คลังเครื่องมือ</h1><p>TOOL INVENTORY MANAGEMENT</p></div></div>
+    <div id="topActions" class="top-actions hidden"><span id="userLabel" class="status"></span> <button class="ghost" onclick="logout()">ออกจากระบบ</button></div>
+  </header>
+
+  <section id="loginView" class="card login">
+    <h2 id="loginTitle">เข้าสู่ระบบ</h2>
+    <p class="muted">กรุณาเข้าสู่ระบบเพื่อจัดการคลังเครื่องมือ</p>
+    <div id="setupNotice" class="notice hidden">ยังไม่มีผู้ดูแลระบบ ให้สร้าง Admin คนแรกด้วย Setup Key ที่ตั้งไว้ใน Cloudflare</div>
+    <form id="loginForm">
+      <div class="fields">
+        <div class="full"><label>ชื่อผู้ใช้</label><input id="loginUser" autocomplete="username" required minlength="3"></div>
+        <div class="full"><label>รหัสผ่าน</label><input id="loginPass" type="password" autocomplete="current-password" required></div>
+        <div id="setupKeyWrap" class="full hidden"><label>Setup Key (ใช้เฉพาะตอนสร้าง Admin คนแรก)</label><input id="setupKey" type="password" autocomplete="off"></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="primary" type="submit" id="loginSubmit">เข้าสู่ระบบ</button><button type="button" class="soft hidden" id="setupBtn" onclick="setupAdmin()">สร้าง Admin คนแรก</button></div>
+      <p id="loginMsg" role="status" class="muted"></p>
+    </form>
+  </section>
+
+  <main id="appView" class="hidden">
+    <section class="grid">
+      <div class="stat"><span>รายการเครื่องมือ</span><strong id="statTools">0</strong></div>
+      <div class="stat"><span>ยอดคงเหลือรวม</span><strong id="statStock">0</strong></div>
+      <div class="stat"><span>ไลน์การผลิต</span><strong id="statLines">0</strong></div>
+      <div class="stat"><span>ยอดคงเหลือติดลบ</span><strong id="statNegative">0</strong></div>
+    </section>
+    <section class="card">
+      <div class="toolbar">
+        <input id="search" class="search" placeholder="ค้นหารหัส ชื่อ ไลน์การผลิต หรือเครื่องจักร..." oninput="renderTools()">
+        <div class="row"><button class="primary" onclick="openTool()">＋ เพิ่มเครื่องมือ</button><button class="soft" onclick="loadTools()">↻ โหลดข้อมูล</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>รูป</th><th>รหัส / ชื่อเครื่องมือ</th><th>ไลน์ / เครื่องจักร</th><th>วันที่รับเข้า</th><th>คงเหลือ</th><th>จัดการ</th></tr></thead><tbody id="toolRows"></tbody></table></div>
+      <div id="empty" class="empty hidden">ยังไม่มีรายการเครื่องมือ กด “เพิ่มเครื่องมือ” เพื่อเริ่มต้น</div>
+    </section>
+    <section class="card">
+      <h2 class="section-title">ประวัติรับเข้า–เบิกออก</h2>
+      <p class="muted">เลือก “ประวัติ” จากรายการเครื่องมือเพื่อดูความเคลื่อนไหวแต่ละรายการ</p>
+      <div id="movementPanel" class="muted">ยังไม่ได้เลือกรายการ</div>
+    </section>
+    <section id="usersPanel" class="card hidden">
+      <h2 class="section-title">เพิ่มผู้ใช้งาน</h2>
+      <form id="userForm" class="fields">
+        <div><label>Username</label><input id="newUsername" required minlength="3" maxlength="40" pattern="[A-Za-z0-9._-]+"></div>
+        <div><label>รหัสผ่าน (อย่างน้อย 12 ตัว)</label><input id="newPassword" type="password" required minlength="12"></div>
+        <div><label>สิทธิ์</label><select id="newRole"><option value="user">User</option><option value="admin">Admin</option></select></div>
+        <div style="align-self:end"><button class="primary" type="submit">เพิ่มผู้ใช้งาน</button></div>
+      </form>
+      <p id="userMsg" class="muted"></p>
+    </section>
+  </main>
+</div>
+
+<div id="toolModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modalbox">
+    <div class="modalhead"><h2 id="toolModalTitle">เพิ่มเครื่องมือ</h2><button class="ghost" onclick="closeModal('toolModal')">ปิด ✕</button></div>
+    <form id="toolForm">
+      <input id="toolId" type="hidden">
+      <div class="fields">
+        <div><label>รหัสเครื่องมือ *</label><input id="toolCode" required maxlength="60"></div>
+        <div><label>ชื่อเครื่องมือ *</label><input id="toolName" required maxlength="200"></div>
+        <div><label>ประเภทเครื่องมือ</label><input id="category" maxlength="200"></div>
+        <div><label>หน่วยนับ</label><select id="unit"><option>ชิ้น</option><option>ชุด</option><option>อัน</option><option>กล่อง</option><option>ตัว</option><option>เล่ม</option></select></div>
+        <div><label>ชื่อไลน์การผลิต *</label><input id="productionLine" list="lineOptions" required maxlength="200" placeholder="เช่น A, B, G1"><datalist id="lineOptions"><option value="A"><option value="B"><option value="C"><option value="D"><option value="E"><option value="F"><option value="G1"><option value="G2"><option value="G3"><option value="H"><option value="J"><option value="K"><option value="OS1"><option value="OS2"><option value="OS3"></datalist></div>
+        <div><label>ขบวนการ / เครื่องจักร *</label><input id="processMachine" required maxlength="200" placeholder="เช่น Press, Assembly, Machine 01"></div>
+        <div class="full"><label>สถานที่เก็บเพิ่มเติม</label><input id="storageLocation" maxlength="200" placeholder="เช่น ตู้ Tool Room ชั้น 2"></div>
+        <div class="full"><label>รูปเครื่องมือ (ถ่ายภาพจากมือถือหรือเลือกรูป)</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment"><div class="row" style="margin-top:8px"><img id="photoPreview" class="preview hidden" alt="ตัวอย่างรูปเครื่องมือ"><label style="display:flex;gap:6px;align-items:center"><input id="removePhoto" type="checkbox" style="width:auto"> ลบรูปเดิม</label></div><small class="muted">รองรับ JPG, PNG, WebP ขนาดไม่เกิน 5 MB</small></div>
+        <div id="initialQtyWrap"><label>จำนวนรับเข้าตั้งต้น</label><input id="initialQty" type="number" min="0" step="1" value="0"></div>
+        <div id="receivedDateWrap"><label>วันที่รับเข้าคลัง</label><input id="receivedDate" type="date"></div>
+        <div class="full"><label>หมายเหตุ</label><textarea id="notes" rows="2" maxlength="500"></textarea></div>
+      </div>
+      <div class="row" style="margin-top:16px"><button class="primary" type="submit" id="saveToolBtn">บันทึกข้อมูล</button><button type="button" class="soft" onclick="closeModal('toolModal')">ยกเลิก</button></div>
+      <p id="toolMsg" class="muted"></p>
+    </form>
+  </div>
+</div>
+
+<div id="movementModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modalbox" style="max-width:520px">
+    <div class="modalhead"><h2 id="movementTitle">รับเข้า–เบิกออก</h2><button class="ghost" onclick="closeModal('movementModal')">ปิด ✕</button></div>
+    <form id="movementForm">
+      <input id="movementToolId" type="hidden">
+      <div class="fields">
+        <div><label>ประเภท</label><select id="movementType"><option value="IN">รับเข้า</option><option value="OUT">เบิกออก</option></select></div>
+        <div><label>จำนวน *</label><input id="movementQty" type="number" min="1" step="1" required></div>
+        <div><label>วันที่ *</label><input id="movementDate" type="date" required></div>
+        <div><label>เลขที่เอกสาร / อ้างอิง</label><input id="movementRef" maxlength="100"></div>
+        <div class="full"><label>วัตถุประสงค์</label><input id="movementPurpose" maxlength="200" placeholder="เช่น เบิกใช้งาน / รับซื้อใหม่"></div>
+        <div class="full"><label>หมายเหตุ</label><textarea id="movementNotes" rows="2" maxlength="500"></textarea></div>
+      </div>
+      <div class="row" style="margin-top:16px"><button class="primary" type="submit">บันทึกความเคลื่อนไหว</button></div>
+      <p id="movementMsg" class="muted"></p>
+    </form>
+  </div>
+</div>
+
+<script>
+const API = "/api";
+let token = sessionStorage.getItem("tool_inv_token") || "";
+let currentUser = null, tools = [], setupRequired = false;
+const $ = id => document.getElementById(id);
+const today = () => new Date().toISOString().slice(0,10);
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fmtDate(s){if(!s)return "-";const [y,m,d]=s.slice(0,10).split("-");return `${d}/${m}/${y}`;}
+function show(el,on=true){$(el).classList.toggle("hidden",!on);}
+function msg(id,text){$(id).textContent=text||"";}
+async function api(path,opts={}) {
+  const headers = new Headers(opts.headers||{});
+  if(token) headers.set("Authorization","Bearer "+token);
+  if(opts.body && !(opts.body instanceof FormData)) headers.set("Content-Type","application/json");
+  const res = await fetch(API+path,{...opts,headers});
+  const data = await res.json().catch(()=>({error:"เซิร์ฟเวอร์ตอบกลับไม่ถูกต้อง"}));
+  if(!res.ok) throw new Error(data.error||`HTTP ${res.status}`);
+  return data;
+}
+async function init(){
+  try { const h=await fetch(API+"/health").then(r=>r.json()); setupRequired=h.setupRequired; }
+  catch { $("loginTitle").textContent="เชื่อมต่อระบบไม่ได้"; msg("loginMsg","ตรวจสอบว่า Deploy Worker และ D1 สำเร็จแล้ว"); return; }
+  show("setupNotice",setupRequired); show("setupKeyWrap",setupRequired); show("setupBtn",setupRequired); show("loginSubmit",!setupRequired);
+  if(token){try{currentUser=await api("/me");showApp();await loadTools();return;}catch{token="";sessionStorage.removeItem("tool_inv_token");}}
+}
+async function setupAdmin(){
+  msg("loginMsg","");
+  try {
+    const res=await fetch(API+"/setup",{method:"POST",headers:{"Content-Type":"application/json","X-Setup-Key":$("setupKey").value},body:JSON.stringify({username:$("loginUser").value,password:$("loginPass").value})});
+    const data=await res.json();if(!res.ok)throw new Error(data.error||"สร้าง Admin ไม่สำเร็จ");
+    alert("สร้าง Admin สำเร็จ กรุณาเข้าสู่ระบบ");
+    setupRequired=false;show("setupNotice",false);show("setupKeyWrap",false);show("setupBtn",false);show("loginSubmit",true);msg("loginMsg",data.message);
+  } catch(e){msg("loginMsg",e.message);}
+}
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();msg("loginMsg","กำลังเข้าสู่ระบบ...");
+  try{const data=await api("/login",{method:"POST",body:JSON.stringify({username:$("loginUser").value,password:$("loginPass").value})});token=data.token;sessionStorage.setItem("tool_inv_token",token);currentUser=data.user;showApp();await loadTools();}
+  catch(e){msg("loginMsg",e.message);}
+});
+function showApp(){show("loginView",false);show("appView",true);show("topActions",true);$("userLabel").textContent=`${currentUser.username} (${currentUser.role})`;show("usersPanel",currentUser.role==="admin");}
+function logout(){token="";currentUser=null;tools=[];sessionStorage.removeItem("tool_inv_token");show("appView",false);show("topActions",false);show("loginView",true);$("loginPass").value="";}
+async function loadTools(){try{const data=await api("/tools");tools=data.items||[];renderTools();}catch(e){alert(e.message);if(e.message.includes("เข้าสู่ระบบ"))logout();}}
+function renderTools(){
+  const q=($("search").value||"").toLowerCase().trim();
+  const filtered=tools.filter(t=>[t.tool_code,t.tool_name,t.production_line,t.process_machine,t.category].some(v=>String(v||"").toLowerCase().includes(q)));
+  $("toolRows").innerHTML=filtered.map(t=>`<tr>
+    <td>${t.photo_key?`<img class="thumb private-photo" data-photo-key="${esc(t.photo_key)}" alt="รูปเครื่องมือ">`:'<div class="thumb" style="display:grid;place-items:center">🧰</div>'}</td>
+    <td><b>${esc(t.tool_code)}</b><br>${esc(t.tool_name)}<br><span class="muted">${esc(t.category||"")}</span></td>
+    <td><span class="pill">${esc(t.production_line||"-")}</span><br>${esc(t.process_machine||"-")}<br><span class="muted">${esc(t.storage_location||"")}</span></td>
+    <td>${fmtDate(t.received_date||t.created_at?.slice(0,10))}</td>
+    <td><b>${Number(t.stock||0).toLocaleString()}</b> ${esc(t.unit||"ชิ้น")}</td>
+    <td><div class="actions"><button class="soft" onclick="openMovement(${t.id},'IN')">รับเข้า</button><button class="soft" onclick="openMovement(${t.id},'OUT')">เบิกออก</button><button class="ghost" onclick="showMovements(${t.id})">ประวัติ</button><button class="ghost" onclick="openTool(${t.id})">แก้ไข</button>${currentUser.role==="admin"?`<button class="danger" onclick="deleteTool(${t.id})">ลบ</button>`:""}</div></td>
+  </tr>`).join("");
+  document.querySelectorAll(".private-photo").forEach(img=>loadPrivateImage(img.dataset.photoKey,img));
+  show("empty",filtered.length===0);
+  $("statTools").textContent=tools.length;
+  $("statStock").textContent=tools.reduce((s,t)=>s+Number(t.stock||0),0).toLocaleString();
+  $("statLines").textContent=new Set(tools.map(t=>t.production_line).filter(Boolean)).size;
+  $("statNegative").textContent=tools.filter(t=>Number(t.stock)<0).length;
+}
+function closeModal(id){show(id,false);}
+async function loadPrivateImage(key,img){
+  try {
+    const res=await fetch(`${API}/images/${encodeURIComponent(key)}`,{headers:{Authorization:"Bearer "+token}});
+    if(!res.ok)throw new Error("โหลดรูปไม่ได้");
+    const blob=await res.blob();
+    if(img.dataset.objectUrl)URL.revokeObjectURL(img.dataset.objectUrl);
+    const objectUrl=URL.createObjectURL(blob);img.dataset.objectUrl=objectUrl;img.src=objectUrl;
+  } catch { img.alt="ไม่สามารถโหลดรูปได้"; }
+}
+function openTool(id=null){
+  $("toolForm").reset();$("toolId").value="";$("initialQty").value=0;$("receivedDate").value=today();$("photoPreview").src="";show("photoPreview",false);show("removePhoto",false);
+  const t=id?tools.find(x=>x.id===id):null;
+  $("toolModalTitle").textContent=t?"แก้ไขเครื่องมือ":"เพิ่มเครื่องมือ";
+  show("initialQtyWrap",!t);show("receivedDateWrap",!t);
+  if(t){$("toolId").value=t.id;$("toolCode").value=t.tool_code;$("toolName").value=t.tool_name;$("category").value=t.category||"";$("unit").value=t.unit||"ชิ้น";$("productionLine").value=t.production_line||"";$("processMachine").value=t.process_machine||"";$("storageLocation").value=t.storage_location||"";$("notes").value=t.notes||"";if(t.photo_key){loadPrivateImage(t.photo_key,$("photoPreview"));show("photoPreview",true);show("removePhoto",true);}}
+  msg("toolMsg","");show("toolModal");
+}
+$("photo").addEventListener("change",()=>{const f=$("photo").files[0];if(f){if(f.size>5*1024*1024){msg("toolMsg","รูปต้องไม่เกิน 5 MB");$("photo").value="";return;} $("photoPreview").src=URL.createObjectURL(f);show("photoPreview",true);}});
+$("toolForm").addEventListener("submit",async e=>{
+  e.preventDefault();const id=$("toolId").value;const body=new FormData();
+  const values={tool_code:$("toolCode").value,tool_name:$("toolName").value,category:$("category").value,unit:$("unit").value,production_line:$("productionLine").value,process_machine:$("processMachine").value,storage_location:$("storageLocation").value,notes:$("notes").value};
+  Object.entries(values).forEach(([k,v])=>body.append(k,v));
+  if(!id){body.append("initial_qty",$("initialQty").value||"0");body.append("received_date",$("receivedDate").value||today());}
+  if($("photo").files[0])body.append("photo",$("photo").files[0]);
+  if($("removePhoto").checked)body.append("remove_photo","true");
+  try{const data=await api(id?`/tools/${id}`:"/tools",{method:id?"PUT":"POST",body});closeModal("toolModal");await loadTools();if(!id)await showMovements(data.item.id);msg("toolMsg","");}
+  catch(err){msg("toolMsg",err.message);}
+});
+async function deleteTool(id){if(!confirm("ยืนยันซ่อนรายการเครื่องมือนี้? ประวัติจะยังถูกเก็บไว้"))return;try{await api(`/tools/${id}`,{method:"DELETE"});await loadTools();}catch(e){alert(e.message);}}
+function openMovement(id,type){const t=tools.find(x=>x.id===id);$("movementForm").reset();$("movementToolId").value=id;$("movementType").value=type;$("movementDate").value=today();$("movementTitle").textContent=`${type==="IN"?"รับเข้า":"เบิกออก"} — ${t?.tool_code||""} ${t?.tool_name||""}`;msg("movementMsg","");show("movementModal");}
+$("movementForm").addEventListener("submit",async e=>{
+  e.preventDefault();const id=$("movementToolId").value;
+  const body={movement_type:$("movementType").value,quantity:Number($("movementQty").value),movement_date:$("movementDate").value,reference_no:$("movementRef").value,purpose:$("movementPurpose").value,notes:$("movementNotes").value};
+  try{await api(`/tools/${id}/movements`,{method:"POST",body:JSON.stringify(body)});closeModal("movementModal");await loadTools();await showMovements(Number(id));}
+  catch(e){msg("movementMsg",e.message);}
+});
+async function showMovements(id){
+  const t=tools.find(x=>x.id===id);$("movementPanel").textContent="กำลังโหลด...";
+  try{const data=await api(`/tools/${id}/movements`);const rows=data.items||[];
+    $("movementPanel").innerHTML=`<p><b>${esc(t?.tool_code||"")} — ${esc(t?.tool_name||"")}</b> | คงเหลือ ${Number(t?.stock||0)} ${esc(t?.unit||"ชิ้น")}</p>`+
+      (rows.length?`<div class="table-wrap"><table><thead><tr><th>วันที่</th><th>รายการ</th><th>จำนวน</th><th>อ้างอิง</th><th>ผู้บันทึก</th></tr></thead><tbody>${rows.map(m=>`<tr><td>${fmtDate(m.movement_date)}</td><td>${m.movement_type==="IN"?"รับเข้า":m.movement_type==="OUT"?"เบิกออก":"ปรับยอด"}<br><span class="muted">${esc(m.purpose||m.notes||"")}</span></td><td>${m.movement_type==="OUT"?"−":"+"}${m.quantity}</td><td>${esc(m.reference_no||"-")}</td><td>${esc(m.username||"-")}</td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">ยังไม่มีประวัติ</div>');
+  }catch(e){$("movementPanel").textContent=e.message;}
+}
+$("userForm").addEventListener("submit",async e=>{
+  e.preventDefault();msg("userMsg","");
+  try{await api("/users",{method:"POST",body:JSON.stringify({username:$("newUsername").value,password:$("newPassword").value,role:$("newRole").value})});$("userForm").reset();msg("userMsg","เพิ่มผู้ใช้งานสำเร็จ");}
+  catch(e){msg("userMsg",e.message);}
+});
+init();
+</script>
+</body>
+</html>
