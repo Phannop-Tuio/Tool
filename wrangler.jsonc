@@ -16,11 +16,12 @@
       "migrations_dir": "migrations"
     }
  // ปิด R2 ไว้ชั่วคราว
-//],
+//]
+//,
 //  "r2_buckets": [
   //  {
   //    "binding": "PHOTOS",
-      "bucket_name": "tool-inventory-photos"
+ //     "bucket_name": "tool-inventory-photos"
  //   }
  // ]
 }
