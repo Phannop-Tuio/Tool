@@ -198,9 +198,9 @@ async function api(request, env) {
     if (!Number.isInteger(qty) || qty < 0 || qty > 1000000) return json({ error: "จำนวนเริ่มต้นไม่ถูกต้อง" }, 400);
     const fields = ["category","unit","production_line","process_machine","storage_location","notes"];
     for (const field of fields) if (body[field] !== undefined && !validText(String(body[field]), 500)) return json({ error: `ข้อมูล ${field} ยาวเกินกำหนด` }, 400);
-    let photoKey = null;
+   /* let photoKey = null;
     try { photoKey = await savePhoto(body.photo instanceof File ? body.photo : null, env); }
-    catch (e) { return json({ error: e.message }, 400); }
+    catch (e) { return json({ error: e.message }, 400); }*/
     try {
       const result = await env.DB.prepare(`
         INSERT INTO tools (tool_code,tool_name,category,unit,production_line,process_machine,storage_location,photo_key,notes,created_by)
@@ -214,7 +214,7 @@ async function api(request, env) {
       `).bind(id, qty, String(body.received_date || dateToday()), "ยอดรับเข้าเริ่มต้น", "ยอดตั้งต้นตอนสร้างรายการ", user.id).run();
       return json({ item: await toolDetail(env, id) }, 201);
     } catch (e) {
-      if (photoKey) await env.PHOTOS.delete(photoKey);
+    /*  if (photoKey) await env.PHOTOS.delete(photoKey);*/
       if (String(e).includes("UNIQUE")) return json({ error: "รหัสเครื่องมือนี้มีอยู่แล้ว" }, 409);
       throw e;
     }
@@ -228,11 +228,11 @@ async function api(request, env) {
     const code = String(body.tool_code || "").trim();
     const name = String(body.tool_name || "").trim();
     if (!code || !name) return json({ error: "กรุณาระบุรหัสและชื่อเครื่องมือ" }, 400);
-    let photoKey = existing.photo_key;
+  /*  let photoKey = existing.photo_key;
     try {
       if (body.remove_photo === "true") { if (photoKey) await env.PHOTOS.delete(photoKey); photoKey = null; }
       if (body.photo instanceof File && body.photo.size) photoKey = await savePhoto(body.photo, env, photoKey);
-    } catch (e) { return json({ error: e.message }, 400); }
+    } catch (e) { return json({ error: e.message }, 400); }*/
     try {
       await env.DB.prepare(`
         UPDATE tools SET tool_code=?,tool_name=?,category=?,unit=?,production_line=?,process_machine=?,storage_location=?,photo_key=?,notes=?,updated_at=datetime('now')
@@ -283,7 +283,7 @@ async function api(request, env) {
     return json({ item: await toolDetail(env, id) }, 201);
   }
 
-  const imageMatch = path.match(/^\/api\/images\/([a-zA-Z0-9._-]+)$/);
+ /* const imageMatch = path.match(/^\/api\/images\/([a-zA-Z0-9._-]+)$/);
   if (imageMatch && method === "GET") {
     const photo = await env.PHOTOS.get(imageMatch[1]);
     if (!photo) return new Response("Not found", { status: 404 });
@@ -292,13 +292,15 @@ async function api(request, env) {
     headers.set("cache-control", "private, max-age=300");
     headers.set("x-content-type-options", "nosniff");
     return new Response(photo.body, { headers });
-  }
-
-  if (path === "/api/users" && method === "GET") {
+  }*/
+if (path.startsWith("/api/images/") && method === "GET") {
+  return json({ error: "ระบบรูปภาพยังไม่เปิดใช้งาน" }, 404);
+}
+ /* if (path === "/api/users" && method === "GET") {
     if (user.role !== "admin") return json({ error: "เฉพาะ Admin เท่านั้น" }, 403);
     const rows = await env.DB.prepare("SELECT id,username,role,active,created_at FROM users ORDER BY id").all();
     return json({ items: rows.results || [] });
-  }
+  }*/
   if (path === "/api/users" && method === "POST") {
     if (user.role !== "admin") return json({ error: "เฉพาะ Admin เท่านั้น" }, 403);
     const body = await request.json();
