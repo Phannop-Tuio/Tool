@@ -12,7 +12,7 @@
     {
       "binding": "DB",
       "database_name": "tool-inventory-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "2ef9e861-29a5-46cd-8383-1553c8ef57f4",
       "migrations_dir": "migrations"
     }
   ],
