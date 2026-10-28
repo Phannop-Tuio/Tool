@@ -206,7 +206,7 @@ async function api(request, env) {
         INSERT INTO tools (tool_code,tool_name,category,unit,production_line,process_machine,storage_location,photo_key,notes,created_by)
         VALUES (?,?,?,?,?,?,?,?,?,?)
       `).bind(code, name, String(body.category || ""), String(body.unit || "ชิ้น"), String(body.production_line || ""),
-        String(body.process_machine || ""), String(body.storage_location || ""), photoKey, String(body.notes || ""), user.id).run();
+        String(body.process_machine || ""), String(body.storage_location || ""), null, String(body.notes || ""), user.id).run();
       const id = result.meta.last_row_id;
       if (qty > 0) await env.DB.prepare(`
         INSERT INTO movements (tool_id,movement_type,quantity,movement_date,purpose,notes,created_by)
@@ -296,11 +296,11 @@ async function api(request, env) {
 if (path.startsWith("/api/images/") && method === "GET") {
   return json({ error: "ระบบรูปภาพยังไม่เปิดใช้งาน" }, 404);
 }
- /* if (path === "/api/users" && method === "GET") {
+  if (path === "/api/users" && method === "GET") {
     if (user.role !== "admin") return json({ error: "เฉพาะ Admin เท่านั้น" }, 403);
     const rows = await env.DB.prepare("SELECT id,username,role,active,created_at FROM users ORDER BY id").all();
     return json({ items: rows.results || [] });
-  }*/
+  }
   if (path === "/api/users" && method === "POST") {
     if (user.role !== "admin") return json({ error: "เฉพาะ Admin เท่านั้น" }, 403);
     const body = await request.json();
