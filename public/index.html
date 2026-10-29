@@ -19,20 +19,50 @@
     <div id="topActions" class="top-actions hidden"><span id="userLabel" class="status"></span> <button class="ghost" onclick="logout()">ออกจากระบบ</button></div>
   </header>
 
-  <section id="loginView" class="card login">
-    <h2 id="loginTitle">เข้าสู่ระบบ</h2>
-    <p class="muted">กรุณาเข้าสู่ระบบเพื่อจัดการคลังเครื่องมือ</p>
-    <div id="setupNotice" class="notice hidden">ยังไม่มีผู้ดูแลระบบ ให้สร้าง Admin คนแรกด้วย Setup Key ที่ตั้งไว้ใน Cloudflare</div>
-    <form id="loginForm">
-      <div class="fields">
-        <div class="full"><label>ชื่อผู้ใช้</label><input id="loginUser" autocomplete="username" required minlength="3"></div>
-        <div class="full"><label>รหัสผ่าน</label><input id="loginPass" type="password" autocomplete="current-password" required></div>
-        <div id="setupKeyWrap" class="full hidden"><label>Setup Key (ใช้เฉพาะตอนสร้าง Admin คนแรก)</label><input id="setupKey" type="password" autocomplete="off"></div>
+  
+<section id="loginView" class="card login">
+  <h2 id="loginTitle">เข้าสู่ระบบ</h2>
+  <p class="muted">กรุณาเข้าสู่ระบบเพื่อจัดการคลังเครื่องมือ</p>
+
+  <div id="setupNotice" class="notice hidden">
+    ยังไม่มีผู้ดูแลระบบ ให้สร้าง Admin คนแรกด้วย Setup Key ที่ตั้งไว้ใน Cloudflare
+  </div>
+
+  <form id="loginForm">
+    <div class="fields">
+      <div class="full">
+        <label for="loginUser">ชื่อผู้ใช้</label>
+        <input id="loginUser" name="username" autocomplete="username"
+               required minlength="3">
       </div>
-      <div class="row" style="margin-top:14px"><button class="primary" type="submit" id="loginSubmit">เข้าสู่ระบบ</button><button type="button" class="soft hidden" id="setupBtn" onclick="setupAdmin()">สร้าง Admin คนแรก</button></div>
-      <p id="loginMsg" role="status" class="muted"></p>
-    </form>
-  </section>
+
+      <div class="full">
+        <label for="loginPass">รหัสผ่าน</label>
+        <input id="loginPass" name="password" type="password"
+               autocomplete="current-password" required>
+      </div>
+
+      <div id="setupKeyWrap" class="full hidden">
+        <label for="setupKey">Setup Key (ใช้เฉพาะตอนสร้าง Admin คนแรก)</label>
+        <input id="setupKey" name="setupKey" type="password"
+               autocomplete="off">
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:14px">
+      <button class="primary" type="submit" id="loginSubmit">
+        เข้าสู่ระบบ
+      </button>
+      <button type="button" class="soft hidden" id="setupBtn"
+              onclick="setupAdmin()">
+        สร้าง Admin คนแรก
+      </button>
+    </div>
+
+    <p id="loginMsg" role="status" class="muted"></p>
+  </form>
+</section>
+
 
   <main id="appView" class="hidden">
     <section class="grid">
